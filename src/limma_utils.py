@@ -474,29 +474,36 @@ def run_limma(expression_data, metadata, group_cols, block_col=None,
     logging.info("LIMMA ANALYSIS WORKFLOW")
     logging.info("="*70)
 
-    # Step 0: Auto-align if requested
-    if auto_align and sample_id_col in metadata.columns:
-        logging.info("Auto-aligning expression data to metadata order...")
-        expression_data = align_expression_to_metadata(expression_data, metadata, sample_id_col)
-
-    # Step 1: Design matrix
+    # Step 1: Design matrix (this may filter metadata)
     design, metadata, group_mapping = create_design_matrix(
         metadata, group_cols, block_col, separator, min_samples_per_group
     )
 
-    # Filter expression data to match filtered metadata (if samples were dropped)
+    # Step 2: Filter and align expression data to match filtered metadata
     if sample_id_col in metadata.columns:
         remaining_samples = metadata[sample_id_col].values
+
+        # Check which samples exist in expression data
+        expr_samples = set(expression_data.columns)
+        missing_in_expr = set(remaining_samples) - expr_samples
+
+        if missing_in_expr:
+            raise ValueError(f"Samples in metadata but not in expression data: {missing_in_expr}")
+
+        # Filter expression data to match filtered metadata
         expression_data = expression_data[remaining_samples]
         logging.info(f"Expression data filtered to {len(remaining_samples)} remaining samples")
-        print_status('green', f"Expression data filtered to match {len(remaining_samples)} samples")
+        print_status('green', f"Expression data filtered and aligned to {len(remaining_samples)} samples")
+    elif auto_align:
+        logging.warning("auto_align=True but sample_id_col not found in metadata. Skipping alignment.")
+        print_status('yellow', f"Warning: Cannot auto-align without '{sample_id_col}' column in metadata")
 
-    # Step 2: Convert to R (with validation)
+    # Step 3: Convert to R (with validation)
     r_expr, r_design, r_block = convert_to_r(
         expression_data, design, metadata, block_col
     )
 
-    # Step 3: Estimate correlation if blocking
+    # Step 4: Estimate correlation if blocking
     correlation = None
     if r_block is not None:
         correlation = estimate_correlation(r_expr, r_design, r_block)
@@ -511,7 +518,7 @@ def run_limma(expression_data, metadata, group_cols, block_col=None,
         status, msg = check_efficiency(efficiency)
         print_status(status, f"Effective sample size: {msg}")
 
-    # Step 4: Fit model
+    # Step 5: Fit model
     fit = fit_limma_model(r_expr, r_design, r_block, correlation, trend, robust)
 
     print_status('green', f"LIMMA ANALYSIS COMPLETED")

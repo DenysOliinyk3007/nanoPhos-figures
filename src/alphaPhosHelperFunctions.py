@@ -12,25 +12,52 @@ def filter_proteins_by_presence(df, min_presence_pct=0.7):
     filtered_df = df[filter_mask]
     return filtered_df
 
-def prepare_ID_datasets (data, nreps = 3, loc_col = 'PTM_localization', loc_treshold = 0.75):
+def prepare_ID_datasets (data, nreps = 3, loc_col = 'PTM_localization', loc_treshold = 0.75,
+                         loc_matrices = None, key_col = 'PTM_Collapse_key'):
+    """Per-replicate counts: total non-NaN cells and Class I localized phosphosites.
+
+    If ``loc_matrices`` is provided (list of per-(site, run) loc DataFrames from
+    ``PeptideCollapse.site_localization_per_run``, parallel to ``data``), Class I
+    is counted strictly per-(site, run): a cell is Class I iff its intensity is
+    non-NaN AND its per-run loc prob >= ``loc_treshold``. This is the R2-compliant
+    metric.
+
+    If ``loc_matrices`` is None, falls back to the legacy dataset-wide-max filter
+    (``dataset[loc_col] >= threshold``) — kept only for backwards compatibility.
+    """
     num_full = []
     num_class_I_all = []
     num_rest_all = []
-    for dataset in data:
+    id_col = []
+    for ds_idx, dataset in enumerate(data):
+        sample_cols = list(dataset.columns[:nreps])
+        tmp_df1 = dataset[sample_cols]
+
+        if loc_matrices is not None:
+            keyed = dataset.set_index(key_col)[sample_cols]
+            loc_aligned = loc_matrices[ds_idx].reindex(
+                index=keyed.index, columns=sample_cols
+            )
+            ci_mask = keyed.notna() & (loc_aligned >= loc_treshold)
+            ci_counts = ci_mask.sum(axis=0)
+        else:
+            tmp_df2 = dataset[dataset[loc_col] >= loc_treshold][sample_cols]
+            ci_counts = tmp_df2.notna().sum(axis=0)
+
         num_class_I = []
         num_rest = []
-        id_col = []
-        tmp_df1 = dataset.iloc[:,:nreps]
-        tmp_df2 = dataset[dataset[loc_col]>=loc_treshold].iloc[:,:nreps]
-        for col in tmp_df1.columns:
-            num_full.append(len(tmp_df1[col].dropna()))
-        for col in tmp_df2.columns:
-            num_full.append(len(tmp_df2[col].dropna()))
-        for col in tmp_df1:
-            num_class_I.append(len(tmp_df2[col].dropna()))
-            num_rest.append(len(tmp_df1[col].dropna()) - len(tmp_df2[col].dropna()))
+        for col in sample_cols:
+            num_full.append(int(tmp_df1[col].notna().sum()))
+        for col in sample_cols:
+            num_full.append(int(ci_counts[col]))
+        for col in sample_cols:
+            ci = int(ci_counts[col])
+            total = int(tmp_df1[col].notna().sum())
+            num_class_I.append(ci)
+            num_rest.append(total - ci)
         num_class_I_all.append(num_class_I)
         num_rest_all.append(num_rest)
+
     for i in range(1, len(data)+1):
         id_col.append('dataset'+str(i))
     id_col1 = np.repeat(id_col, nreps*2).tolist()
@@ -51,11 +78,13 @@ def plot_ID_barplot(strip_numbers, classI_numbers, rest_numbers, ids, classI_col
     fig.update_layout(width = plot_width, height = plot_height, template = plot_template, barmode = 'stack', showlegend = False)
     return fig
 
-def get_cumulative_barplot (list_of_datasets, nreps, loc_col = 'PTM_localization', loc_treshold = 0.75, classI_color = '#8A0000', 
-                    rest_color = '#E83F25', point_color = '#393E46', point_size = 9, 
-                    point_jitter = 1, plot_width = 600, plot_height = 600, plot_template = 'plotly_white', bar_width = 0.5, get_cumulative_dataset = False):
-    a,b,c,d = prepare_ID_datasets(data=list_of_datasets, nreps=nreps, loc_col=loc_col, loc_treshold=loc_treshold)
-    e = plot_ID_barplot(strip_numbers=a, classI_numbers=b, rest_numbers=c, ids = d, 
+def get_cumulative_barplot (list_of_datasets, nreps, loc_col = 'PTM_localization', loc_treshold = 0.75, classI_color = '#8A0000',
+                    rest_color = '#E83F25', point_color = '#393E46', point_size = 9,
+                    point_jitter = 1, plot_width = 600, plot_height = 600, plot_template = 'plotly_white', bar_width = 0.5, get_cumulative_dataset = False,
+                    loc_matrices = None, key_col = 'PTM_Collapse_key'):
+    a,b,c,d = prepare_ID_datasets(data=list_of_datasets, nreps=nreps, loc_col=loc_col, loc_treshold=loc_treshold,
+                                  loc_matrices=loc_matrices, key_col=key_col)
+    e = plot_ID_barplot(strip_numbers=a, classI_numbers=b, rest_numbers=c, ids = d,
                         classI_color=classI_color, rest_color=rest_color, point_color=point_color, point_size=point_size,
                         point_jitter=point_jitter, plot_width=plot_width, plot_height=plot_height, plot_template=plot_template, bar_width=bar_width)
     if get_cumulative_dataset == False:

@@ -1,0 +1,73 @@
+# nanoPhos repo .gitignore — see docs/REPO_STRUCTURE.md for policy.
+
+# --- Untracked data/output trees ---
+raw_data/
+processed_data/
+archive/
+cc_runs/
+
+# --- Python venv living at repo root (this directory IS a venv) ---
+Include/
+Lib/
+Scripts/
+share/
+etc/
+pyvenv.cfg
+AQ/
+
+# --- Tooling caches / IDE / app config ---
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+.streamlit/
+.claude/
+.vscode/
+.idea/
+
+# --- Logs and process artefacts ---
+*.log
+limma_logs/
+
+# --- Stale shell of the old nested git repo ---
+# (PeptideCollapse.log inside is held open by a running kernel; clean up later)
+nanoPhos-figures/
+
+# --- Binaries / large media (track only final figure PDFs in Figures/raw/ if you set that up) ---
+*.png
+*.html
+*.zip
+*.docx
+*.doc
+*.ai
+*.psd
+*.fasta
+*.tsv
+*.parquet
+*.pdf
+*.pkl
+
+# --- Vendored dependency clone: 572 MB AlphaQuant git checkout.
+#     Install from PyPI via requirements.txt (alphaquant==0.2.0), do NOT commit. ---
+src/alphaquant/
+
+# --- docs/: track only human-written markdown; the rest is session scratch
+#     or large external reference datasets (docs/phosphonetworks/ ~690 MB). ---
+docs/*
+
+# --- Session scratch / working files (root-level _*.txt) ---
+/_*.txt
+
+# Allow tracked exceptions
+!data/*.csv
+!docs/*.md
+!README.md
+!.gitignore
+!requirements.txt
+
+# --- Unused panel exports (data lives in MetaInfo workbook; not read by notebooks) ---
+data/fig3g.csv
+data/fig4e.csv
+
+# --- PRIDE-deposition helper (internal path, not needed to reproduce figures) ---
+src/metainfo_export.py
