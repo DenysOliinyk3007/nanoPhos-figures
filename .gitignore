@@ -60,6 +60,7 @@ docs/*
 
 # Allow tracked exceptions
 !data/*.csv
+!data/*.tsv
 !docs/*.md
 !README.md
 !.gitignore
@@ -69,5 +70,6 @@ docs/*
 data/fig3g.csv
 data/fig4e.csv
 
-# --- PRIDE-deposition helper (internal path, not needed to reproduce figures) ---
-src/metainfo_export.py
+# --- Standalone Class I counter, superseded by core.count_sites_per_sample_ptm_report
+#     (not imported by any figure notebook) ---
+src/classI_count.py

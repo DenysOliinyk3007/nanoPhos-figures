@@ -13,12 +13,26 @@ python -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\a
 pip install -r requirements.txt
 ```
 
-Drop Spectronaut `_Report.tsv` exports into `raw_data/` (gitignored), then open a
-figure notebook from the repo root and **Restart → Run All**:
+Then set up the data layout (all paths in the notebooks are relative to the repo root):
+
+```
+pride_data/     <- extract the MassIVE deposit here, preserving its structure
+                   (pride_data/analysis_data/..., incl. .../revision/figureN/ reports,
+                    FASTA, Supplementary_Table_3.xlsx, proteome, aq_out results, …)
+data/           <- committed reference data (funscores, mouse_kegg_annotation,
+                   *_conditionSetup.tsv) — already in the repo
+figures/        <- figure outputs, created automatically on run
+```
+
+Open a figure notebook from the repo root and **Restart → Run All**:
 
 ```bash
 jupyter lab nanoPhos_Figure2_v01.ipynb
 ```
+
+> The DIA-NN comparison notebook (`nanoPhos_Figure3_DIANN_v00.ipynb`) additionally
+> requires the external **alphaPhos** package — set `ALPHAPHOS_COLLAPSE` to its
+> `preprocess/collapse.py` path.
 
 ### Notebooks
 
@@ -35,7 +49,7 @@ The original-submission (`v00`) notebooks are retained locally under `archive/`
 
 | Path | Contents |
 |---|---|
-| `src/` | Production Python modules: `PeptideCollapse_v{3,4}`, helpers, analytics |
+| `src/` | Production Python modules: `core` (Class I collapse), `analytics_core_V04`, `limma_utils`, `PeptideCollapse_v4`, `alphaPhosHelperFunctions` |
 | `docs/` | `REPO_STRUCTURE.md`, changelogs, manuscript context |
 | `data/` | Small reference CSVs cited by individual figures |
 | `raw_data/` | Spectronaut DIA exports (gitignored, large) |
