@@ -29,7 +29,8 @@ their roles are general, only the specific filenames are domain-bound.
 ├── .streamlit/                Streamlit app config (untracked)
 ├── .claude/                   Claude Code settings (untracked)
 │
-└── <project>_Figure{N}_v{NN}.ipynb     One self-contained notebook per figure
+└── notebooks/                  Reproduction notebooks, one self-contained
+                               <project>_Figure{N}_v{NN}.ipynb per figure (tracked)
 ```
 
 A concrete snapshot for `uPhosHT`:
@@ -137,11 +138,13 @@ Older code versions, exploratory notebooks, reference PDFs, deprecated
 plots. Move things here rather than deleting — useful for reconstructing
 why a decision was made. Not tracked because it would bloat the repo.
 
-### `<project>_Figure{N}_v{NN}.ipynb` — figure notebooks (tracked)
-One notebook per manuscript figure, at the repo root. Self-contained
-(`Restart → Run All` reproduces the figure given `raw_data/` + `data/`).
-Version suffix `v00`, `v01`, ... for major rewrites; minor edits use git
-history. See `docs/NOTEBOOK_REFACTORING_GUIDE.md`.
+### `notebooks/<project>_Figure{N}_v{NN}.ipynb` — figure notebooks (tracked)
+One notebook per manuscript figure, under `notebooks/`. Self-contained
+(`Restart → Run All` reproduces the figure given `raw_data/` + `data/`); an
+opening guard cell normalizes the working directory to the repo root so the
+relative paths resolve whether Jupyter is launched from the root or from
+`notebooks/`. Version suffix `v00`, `v01`, ... for major rewrites; minor edits
+use git history. See `docs/NOTEBOOK_REFACTORING_GUIDE.md`.
 
 ---
 
@@ -151,7 +154,7 @@ The `.gitignore` enforces:
 
 | Tracked | Untracked |
 |---|---|
-| `src/`, `docs/`, `data/`, `*.ipynb` at root | `raw_data/`, `processed_data/`, `archive/` |
+| `src/`, `docs/`, `data/`, `notebooks/*.ipynb` | `raw_data/`, `processed_data/`, `archive/`, root-level `*.ipynb`, `*.json` |
 | `README.md`, `.gitignore`, `requirements.txt` | `.streamlit/`, `.claude/`, `uPhosHT-env/`, `.ipynb_checkpoints/`, `__pycache__/` |
 | `Figures/raw/*.pdf` (figure panel exports, optional) | `*.png`, `*.html`, `*.zip`, `*.doc(x)`, `*.ai`, `*.psd`, `*.fasta`, `*.log`, `*.pyc` |
 

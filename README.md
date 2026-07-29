@@ -24,26 +24,26 @@ data/           <- committed reference data (funscores, mouse_kegg_annotation,
 figures/        <- figure outputs, created automatically on run
 ```
 
-Open a figure notebook from the repo root and **Restart → Run All**:
+Open a figure notebook and **Restart → Run All** (launch Jupyter from the repo root
+so the relative data paths resolve; the notebooks also self-correct their working
+directory if opened from inside `notebooks/`):
 
 ```bash
-jupyter lab nanoPhos_Figure2_v01.ipynb
+jupyter lab notebooks/nanoPhos_Figure2_v01.ipynb
 ```
-
-> The DIA-NN comparison notebook (`nanoPhos_Figure3_DIANN_v00.ipynb`) additionally
-> requires the external **alphaPhos** package — set `ALPHAPHOS_COLLAPSE` to its
-> `preprocess/collapse.py` path.
 
 ### Notebooks
 
-- **`nanoPhos_Figure{2–5}_v01.ipynb`**, **`nanoPhos_Suppl_Figure{1–4}_v01.ipynb`** —
-  the revised analysis, with strict per-run Class I localization filtering
-  (probability ≥ 0.75), used for the *Nature Communications* revision. These are the
-  notebooks that reproduce the published figures.
-- **`nanoPhos_Figure3_DIANN_v00.ipynb`** — DIA-NN cross-search comparison.
+All reproduction notebooks live in [`notebooks/`](notebooks/):
 
-The original-submission (`v00`) notebooks are retained locally under `archive/`
-(not version-controlled).
+- **`nanoPhos_Figure{2–5}_v01.ipynb`** and **`nanoPhos_Suppl_Figure{1–5}_v01.ipynb`** —
+  the revised analysis, with strict per-run Class I localization filtering
+  (probability ≥ 0.75), used for the *Nature Communications* revision. These reproduce
+  the published main and supplementary figures.
+
+Exploratory and superseded notebooks — the original-submission (`v00`) versions and a
+DIA-NN cross-search comparison that is **not** part of the final manuscript — are
+retained locally under `archive/` and are not version-controlled.
 
 ## Repository layout
 
@@ -54,8 +54,7 @@ The original-submission (`v00`) notebooks are retained locally under `archive/`
 | `data/` | Small reference CSVs cited by individual figures |
 | `raw_data/` | Spectronaut DIA exports (gitignored, large) |
 | `archive/` | Older versions, exploratory notebooks, deprecated work (gitignored) |
-| `nanoPhos_Figure{N}_v01.ipynb` | One notebook per manuscript figure (root level), revised analysis |
-| `nanoPhos_Suppl_Figure{N}_v01.ipynb` | Supplementary figure notebooks |
+| `notebooks/` | Reproduction notebooks: one per main figure (`nanoPhos_Figure{2–5}_v01.ipynb`) and per supplementary figure (`nanoPhos_Suppl_Figure{1–5}_v01.ipynb`), revised analysis |
 
 > **Note:** `src/alphaquant/` and `docs/phosphonetworks/` are large vendored/reference
 > trees and are gitignored. AlphaQuant installs from PyPI via `requirements.txt`.
@@ -83,8 +82,9 @@ available for direct A/B comparison.
 
 Each figure notebook is self-contained. `Restart → Run All` regenerates panel-level
 outputs given a populated `raw_data/` and the dependencies in `requirements.txt`.
-The first cell of each notebook prepends `src/` to `sys.path`, so the bare module
-imports below it resolve to the production code under `src/`.
+The first cells of each notebook set the working directory to the repo root and
+prepend `src/` to `sys.path`, so the bare module imports below them resolve to the
+production code under `src/`.
 
 ## Citation
 

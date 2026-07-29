@@ -46,6 +46,7 @@ nanoPhos-figures/
 *.parquet
 *.pdf
 *.pkl
+*.json
 
 # --- Vendored dependency clone: 572 MB AlphaQuant git checkout.
 #     Install from PyPI via requirements.txt (alphaquant==0.2.0), do NOT commit. ---
@@ -57,6 +58,11 @@ docs/*
 
 # --- Session scratch / working files (root-level _*.txt) ---
 /_*.txt
+
+# --- Notebooks: the canonical, reviewer-facing copies live in notebooks/ (tracked).
+#     Root-level *.ipynb are local working scratch; the DIA-NN comparison and all
+#     prior versions are kept under archive/ (gitignored). Nothing is deleted. ---
+/*.ipynb
 
 # Allow tracked exceptions
 !data/*.csv
