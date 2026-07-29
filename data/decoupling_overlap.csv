@@ -1,0 +1,11 @@
+input_ng,branch,n_sites,shared_with_classic,branch_only_vs_classic,classic_covers_pct
+100,classic,19064,19064,0,100.0
+100,hybrid,7033,5388,1645,76.6
+100,wCleanup,9799,6840,2959,69.8
+100,woCleanup,14865,9465,5400,63.7
+100,classic_vs_union_others,19064,11272,7792,59.4
+1000,classic,36468,36468,0,100.0
+1000,hybrid,16221,12876,3345,79.4
+1000,wCleanup,34363,23138,11225,67.3
+1000,woCleanup,29446,21029,8417,71.4
+1000,classic_vs_union_others,36468,27167,9301,61.1
