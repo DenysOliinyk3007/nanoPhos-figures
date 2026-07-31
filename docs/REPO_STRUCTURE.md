@@ -154,7 +154,7 @@ The `.gitignore` enforces:
 
 | Tracked | Untracked |
 |---|---|
-| `src/`, `docs/`, `data/`, `notebooks/*.ipynb` | `raw_data/`, `processed_data/`, `archive/`, root-level `*.ipynb`, `*.json` |
+| `src/`, `docs/`, `data/`, `tables/`, `notebooks/*.ipynb` | `raw_data/`, `processed_data/`, `archive/`, root-level `*.ipynb`, `*.json` |
 | `README.md`, `.gitignore`, `requirements.txt` | `.streamlit/`, `.claude/`, `uPhosHT-env/`, `.ipynb_checkpoints/`, `__pycache__/` |
 | `Figures/raw/*.pdf` (figure panel exports, optional) | `*.png`, `*.html`, `*.zip`, `*.doc(x)`, `*.ai`, `*.psd`, `*.fasta`, `*.log`, `*.pyc` |
 

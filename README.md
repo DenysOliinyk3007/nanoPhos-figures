@@ -18,9 +18,10 @@ Then set up the data layout (all paths in the notebooks are relative to the repo
 ```
 pride_data/     <- extract the MassIVE deposit here, preserving its structure
                    (pride_data/analysis_data/..., incl. .../revision/figureN/ reports,
-                    FASTA, Supplementary_Table_3.xlsx, proteome, aq_out results, …)
+                    FASTA, proteome, aq_out results, …)
 data/           <- committed reference data (funscores, mouse_kegg_annotation,
                    *_conditionSetup.tsv) — already in the repo
+tables/         <- committed manuscript tables (Supplementary_Table_3, etc.) — in the repo
 figures/        <- figure outputs, created automatically on run
 ```
 
@@ -29,14 +30,14 @@ so the relative data paths resolve; the notebooks also self-correct their workin
 directory if opened from inside `notebooks/`):
 
 ```bash
-jupyter lab notebooks/nanoPhos_Figure2_v01.ipynb
+jupyter lab notebooks/nanoPhos_Figure2.ipynb
 ```
 
 ### Notebooks
 
 All reproduction notebooks live in [`notebooks/`](notebooks/):
 
-- **`nanoPhos_Figure{2–5}_v01.ipynb`** and **`nanoPhos_Suppl_Figure{1–5}_v01.ipynb`** —
+- **`nanoPhos_Figure{2–5}.ipynb`** and **`nanoPhos_Suppl_Figure{1–5}.ipynb`** —
   the revised analysis, with strict per-run Class I localization filtering
   (probability ≥ 0.75), used for the *Nature Communications* revision. These reproduce
   the published main and supplementary figures.
@@ -54,7 +55,8 @@ retained locally under `archive/` and are not version-controlled.
 | `data/` | Small reference CSVs cited by individual figures |
 | `raw_data/` | Spectronaut DIA exports (gitignored, large) |
 | `archive/` | Older versions, exploratory notebooks, deprecated work (gitignored) |
-| `notebooks/` | Reproduction notebooks: one per main figure (`nanoPhos_Figure{2–5}_v01.ipynb`) and per supplementary figure (`nanoPhos_Suppl_Figure{1–5}_v01.ipynb`), revised analysis |
+| `notebooks/` | Reproduction notebooks: one per main figure (`nanoPhos_Figure{2–5}.ipynb`) and per supplementary figure (`nanoPhos_Suppl_Figure{1–5}.ipynb`), revised analysis |
+| `tables/` | Committed manuscript tables (`Supplementary_Table_3.xlsx`, hydrophobic-peptide supplementary table) |
 
 > **Note:** `src/alphaquant/` and `docs/phosphonetworks/` are large vendored/reference
 > trees and are gitignored. AlphaQuant installs from PyPI via `requirements.txt`.
